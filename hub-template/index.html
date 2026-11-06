@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root {
+    --ground: #F5F7F9;
+    --surface: #FFFFFF;
+    --surface-2: #EDF0F3;
+    --surface-3: #E4E9ED;
+    --ink: #16202B;
+    --muted: #5B6B78;
+    --faint: #8996A2;
+    --border: #DCE2E7;
+    --accent: #0E7C86;
+    --accent-ink: #FFFFFF;
+    --accent-wash: #E3F1F1;
+    --code-bg: #EEF2F4;
+    --st-backlog: #6B7785;    --st-backlog-bg: #EEF0F2;
+    --st-progress: #A85E00;  --st-progress-bg: #FBEEDC;
+    --st-testing: #3B5BDB;   --st-testing-bg: #E9ECFC;
+    --st-done: #257A3E;      --st-done-bg: #E4F4E8;
+    --st-unstaged: #B3261E;  --st-unstaged-bg: #FBE6E4;
+    --shadow: 0 1px 2px rgba(22,32,43,0.06), 0 6px 20px -8px rgba(22,32,43,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10141A;
+      --surface: #171D25;
+      --surface-2: #1C232C;
+      --surface-3: #242C36;
+      --ink: #E7ECF1;
+      --muted: #93A2AF;
+      --faint: #63707C;
+      --border: #2A323C;
+      --accent: #3ECFC7;
+      --accent-ink: #06211F;
+      --accent-wash: #16302F;
+      --code-bg: #1D2932;
+      --st-backlog: #97A3AF;   --st-backlog-bg: #262E37;
+      --st-progress: #E3A548;  --st-progress-bg: #3A2B12;
+      --st-testing: #8CA0F5;   --st-testing-bg: #222A47;
+      --st-done: #58C97C;      --st-done-bg: #16301F;
+      --st-unstaged: #F08A82;  --st-unstaged-bg: #3A1B19;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10141A;
+    --surface: #171D25;
+    --surface-2: #1C232C;
+    --surface-3: #242C36;
+    --ink: #E7ECF1;
+    --muted: #93A2AF;
+    --faint: #63707C;
+    --border: #2A323C;
+    --accent: #3ECFC7;
+    --accent-ink: #06211F;
+    --accent-wash: #16302F;
+    --code-bg: #1D2932;
+    --st-backlog: #97A3AF;   --st-backlog-bg: #262E37;
+    --st-progress: #E3A548;  --st-progress-bg: #3A2B12;
+    --st-testing: #8CA0F5;   --st-testing-bg: #222A47;
+    --st-done: #58C97C;      --st-done-bg: #16301F;
+      --st-unstaged: #F08A82;  --st-unstaged-bg: #3A1B19;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- Shell ---------- */
+  .shell {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    width: 320px;
+    flex: 0 0 320px;
+    background: var(--surface-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .brand {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .brand-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 2px;
+    background: var(--accent);
+    display: inline-block;
+    flex: none;
+  }
+  .brand-title {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    margin: 4px 0 6px;
+  }
+  .brand-meta {
+    font-size: 12px;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sidebar-search { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  .sidebar-search input {
+    width: 100%;
+    font: inherit;
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .sidebar-search input::placeholder { color: var(--faint); }
+
+  .nav-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 10px 24px;
+  }
+
+  .nav-home {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 7px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .nav-home:hover, .nav-home.active { background: var(--surface-3); text-decoration: none; }
+  .nav-home.active { color: var(--accent); }
+
+  .nav-group { margin-top: 14px; }
+  .nav-group-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .nav-group-title a {
+    color: inherit;
+    border-radius: 5px;
+    padding: 2px 5px;
+    margin: -2px -5px;
+  }
+  .nav-group-title a:hover { background: var(--surface-3); color: var(--ink); text-decoration: none; }
+  .nav-group-title a.active { color: var(--accent); }
+  .nav-subgroup { margin-bottom: 10px; }
+  .nav-subgroup-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .status-swatch { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .sw-backlog { background: var(--st-backlog); }
+  .sw-in-progress { background: var(--st-progress); }
+  .sw-testing { background: var(--st-testing); }
+  .sw-done { background: var(--st-done); }
+  .sw-unstaged { background: var(--st-unstaged); }
+  .nav-subgroup-count {
+    margin-left: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--faint);
+    font-size: 11px;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 7px 10px 7px 24px;
+    border-radius: 7px;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .nav-item:hover { background: var(--surface-3); text-decoration: none; }
+  .nav-item.active { background: var(--accent-wash); color: var(--accent); }
+  .nav-item .item-id {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--faint);
+    display: block;
+  }
+  .nav-item.active .item-id { color: var(--accent); opacity: 0.85; }
+  .nav-item .item-title {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-empty {
+    padding: 5px 10px 5px 24px;
+    font-size: 12px;
+    color: var(--faint);
+    font-style: italic;
+  }
+
+  /* ---------- Main ---------- */
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .topbar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .crumb { font-size: 12.5px; color: var(--muted); font-family: "JetBrains Mono", monospace; }
+  .crumb b { color: var(--ink); font-weight: 600; }
+  .topbar-spacer { flex: 1; }
+  .snapshot-pill {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+
+  .content-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px clamp(20px, 5vw, 56px) 80px;
+  }
+
+  /* ---------- Overview ---------- */
+  .ov-lede { max-width: 62ch; color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+  .ov-lede strong { color: var(--ink); }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-tile .n {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 30px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .stat-tile .l {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-tile.acc-backlog .n { color: var(--st-backlog); }
+  .stat-tile.acc-progress .n { color: var(--st-progress); }
+  .stat-tile.acc-testing .n { color: var(--st-testing); }
+  .stat-tile.acc-done .n { color: var(--st-done); }
+  .stat-tile.acc-unstaged .n { color: var(--st-unstaged); }
+
+  .ov-section { margin-bottom: 34px; }
+  .ov-section h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+
+  .stage-list { display: flex; flex-direction: column; gap: 10px; }
+  .stage-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .stage-row:hover { border-color: var(--accent); text-decoration: none; }
+  .stage-row .stage-name { font-weight: 600; font-size: 14px; min-width: 210px; }
+  .stage-row .stage-sub { color: var(--muted); font-size: 12.5px; }
+  .stage-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+    display: flex;
+    min-width: 80px;
+  }
+  .stage-bar span { display: block; height: 100%; }
+  .stage-count { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .open-list { display: flex; flex-direction: column; gap: 8px; }
+  .open-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--ink);
+  }
+  .open-card:hover { border-color: var(--accent); text-decoration: none; }
+  .open-card .row1 { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; flex-wrap: wrap; }
+  .open-card .id { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--faint); }
+  .open-card .title { font-weight: 600; font-size: 13.5px; }
+  .open-card .desc {
+    color: var(--muted);
+    font-size: 12.5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .open-card .when {
+    margin-left: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .cat-card .cat-name { font-weight: 600; font-size: 13.5px; margin-bottom: 8px; }
+  .cat-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .cat-card a { font-size: 12.5px; color: var(--ink); }
+  .cat-card a:hover { color: var(--accent); }
+
+  /* ---------- Kanban dashboard ---------- */
+  .kanban-board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  .kanban-col {
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 120px;
+  }
+  .kanban-backlog     { background: var(--st-backlog-bg); }
+  .kanban-in-progress { background: var(--st-progress-bg); }
+  .kanban-testing     { background: var(--st-testing-bg); }
+  .kanban-done        { background: var(--st-done-bg); }
+  .kanban-unstaged    { background: var(--st-unstaged-bg); }
+  .kanban-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .kanban-backlog .kanban-head     { color: var(--st-backlog); }
+  .kanban-in-progress .kanban-head { color: var(--st-progress); }
+  .kanban-testing .kanban-head     { color: var(--st-testing); }
+  .kanban-done .kanban-head        { color: var(--st-done); }
+  .kanban-unstaged .kanban-head    { color: var(--st-unstaged); }
+  .kanban-count { margin-left: auto; font-variant-numeric: tabular-nums; opacity: 0.75; }
+  .kanban-cards { display: flex; flex-direction: column; gap: 8px; }
+  .kanban-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 12px;
+    box-shadow: var(--shadow);
+  }
+  .kanban-card:hover { border-color: var(--accent); text-decoration: none; }
+  .kanban-card .id { display: block; font-size: 11px; color: var(--faint); margin-bottom: 3px; }
+  .kanban-card .title { display: block; font-size: 13px; color: var(--ink); font-weight: 500; line-height: 1.35; word-wrap: break-word;}
+  .kanban-empty {
+    font-size: 12px;
+    color: var(--faint);
+    font-style: italic;
+    padding: 8px 2px;
+  }
+  @media (max-width: 980px) {
+    .kanban-board { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  }
+  @media (max-width: 560px) {
+    .kanban-board { grid-template-columns: 1fr !important; }
+  }
+
+  /* ---------- Pill / badges ---------- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .pill-backlog  { background: var(--st-backlog-bg); color: var(--st-backlog); }
+  .pill-in-progress { background: var(--st-progress-bg); color: var(--st-progress); }
+  .pill-testing  { background: var(--st-testing-bg); color: var(--st-testing); }
+  .pill-done     { background: var(--st-done-bg); color: var(--st-done); }
+  .pill-unstaged { background: var(--st-unstaged-bg); color: var(--st-unstaged); }
+  .pill-stage {
+    background: var(--surface-3);
+    color: var(--muted);
+  }
+  .pill-kind-task { background: var(--accent-wash); color: var(--accent); }
+  .pill-kind-note { background: var(--surface-3); color: var(--muted); }
+
+  /* ---------- Doc view ---------- */
+  .doc-header { margin-bottom: 22px; }
+  .doc-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .doc-title { font-size: 24px; font-weight: 700; text-wrap: balance; letter-spacing: -0.01em; }
+  .doc-meta { margin-top: 8px; font-size: 12px; color: var(--faint); font-family: "JetBrains Mono", monospace; }
+  .doc-meta span + span::before { content: "·"; margin: 0 8px; }
+
+  .md { max-width: 74ch; }
+  .md h1, .md h2, .md h3, .md h4 { text-wrap: balance; line-height: 1.3; }
+  .md h1 { font-size: 21px; margin: 30px 0 12px; }
+  .md h2 { font-size: 18px; margin: 28px 0 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .md h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .md h3 { font-size: 15.5px; margin: 20px 0 8px; color: var(--ink); }
+  .md h4 { font-size: 14px; margin: 16px 0 6px; color: var(--muted); }
+  .md p { margin: 0 0 14px; }
+  .md ul, .md ol { margin: 0 0 14px; padding-left: 22px; }
+  .md li { margin-bottom: 4px; }
+  .md li > ul, .md li > ol { margin-top: 4px; }
+  .md strong { font-weight: 700; }
+  .md code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.87em;
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  .md pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+  .md pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.55; }
+  .md blockquote {
+    margin: 0 0 16px;
+    padding: 4px 16px;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+    background: var(--surface-2);
+    border-radius: 0 8px 8px 0;
+  }
+  .md blockquote p:last-child { margin-bottom: 0; }
+  .md hr { border: none; border-top: 1px solid var(--border); margin: 26px 0; }
+  .md a { word-break: break-word; }
+  .md table-wrap { overflow-x: auto; margin: 0 0 16px; }
+  .md table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .md th, .md td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; vertical-align: top; }
+  .md th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+  .md input[type="checkbox"] {
+    accent-color: var(--accent);
+    margin-right: 7px;
+    transform: translateY(1px);
+  }
+  .md li.task-list-item { list-style: none; margin-left: -22px; padding-left: 22px; }
+
+  .state-msg { color: var(--faint); font-size: 13.5px; padding: 40px 0; }
+
+  /* ---------- Mobile ---------- */
+  .menu-toggle {
+    display: none;
+    font: inherit;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  @media (max-width: 860px) {
+    .shell { display: block; }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      width: min(320px, 86vw);
+      flex: none;
+    }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow); }
+    .main { height: auto; min-height: 100vh; }
+    .content-scroll { height: auto; padding: 24px 16px 60px; }
+    .menu-toggle { display: inline-flex; align-items: center; gap: 6px; }
+    .topbar { padding: 12px 16px; }
+    .backdrop {
+      display: none;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 19;
+    }
+    .backdrop.open { display: block; }
+    .doc-title { font-size: 20px; }
+  }
+
+  /* ---------- Hub additions ---------- */
+  .pill-project { background: var(--surface-3); color: var(--muted); }
+  .switcher { padding: 10px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .switcher-label { font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .project-select {
+    flex: 1; min-width: 0; font: inherit; font-size: 13px; font-weight: 600; padding: 7px 10px; border-radius: 7px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink); cursor: pointer;
+  }
+  .project-select:hover { border-color: var(--accent); }
+  .warn-box {
+    background: var(--st-unstaged-bg); color: var(--st-unstaged); border: 1px solid var(--st-unstaged);
+    border-radius: 9px; padding: 9px 12px; font-size: 12.5px; margin-bottom: 12px;
+  }
+  .nav-warn { margin: 8px 10px 0; padding: 7px 9px; font-size: 11.5px; border-radius: 7px; background: var(--st-unstaged-bg); color: var(--st-unstaged); }
+  .refresh-btn {
+    font: inherit; font-family: "JetBrains Mono", monospace; font-size: 11px; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); cursor: pointer;
+  }
+  .refresh-btn:hover { border-color: var(--accent); }
+  .kanban-card[draggable="true"] { cursor: grab; }
+  .kanban-card.dragging { opacity: 0.45; }
+  .kanban-col.drop-ok { outline: 2px dashed var(--accent); outline-offset: -4px; }
+  .kanban-hint { font-size: 12px; color: var(--faint); margin: -14px 0 18px; }
+  .rel-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; }
+  .rel-chip {
+    display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 9px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink); font-size: 12.5px;
+  }
+  a.rel-chip:hover { border-color: var(--accent); text-decoration: none; }
+  .rel-warn { border-color: var(--st-unstaged); color: var(--st-unstaged); background: var(--st-unstaged-bg); }
+  .rel-title { font-weight: 500; }
+  .doc-h { font-family: "JetBrains Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 18px 0 0; }
+  .status-select { font: inherit; font-size: 12.5px; padding: 5px 8px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); }
+  .status-line { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; max-width: min(560px, 90vw);
+    background: var(--ink); color: var(--ground); padding: 10px 16px; border-radius: 10px; font-size: 13px; box-shadow: var(--shadow);
+  }
+  .toast.err { background: var(--st-unstaged); color: #fff; }
+  .notice { background: var(--st-done-bg); color: var(--st-done); border: 1px solid var(--st-done); border-radius: 9px; padding: 9px 12px; font-size: 13px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-eyebrow"><span class="dot"></span><span id="brandEyebrow">Workflow Hub</span></div>
+      <div class="brand-title">Project Board</div>
+      <div class="brand-meta mono" id="snapshotLine">snapshot —</div>
+    </div>
+    <div class="switcher" id="switcher" hidden></div>
+    <div class="sidebar-search">
+      <input type="text" id="searchBox" placeholder="Filter tasks &amp; notes…" autocomplete="off">
+    </div>
+    <nav class="nav-scroll" id="navScroll"></nav>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-toggle" id="menuToggle" type="button">☰ Menu</button>
+      <div class="crumb" id="crumb"><b>Overview</b></div>
+      <div class="topbar-spacer"></div>
+      <button class="refresh-btn" id="refreshBtn" type="button" title="Reload manifests">↻ Refresh</button>
+      <div class="snapshot-pill" id="snapshotPill">snapshot —</div>
+    </div>
+    <div class="content-scroll" id="contentScroll">
+      <div class="state-msg">Loading board…</div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/marked.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  marked.setOptions({ gfm: true, breaks: false });
+
+  var STATUS_ORDER = ["backlog", "in-progress", "testing", "done", "unstaged"];
+  var MOVE_TARGETS = ["backlog", "in-progress", "testing", "done"];
+  var STATUS_LABEL = { "backlog": "Backlog", "in-progress": "In Progress", "testing": "Testing", "done": "Done", "unstaged": "Unstaged" };
+  var CATEGORY_ORDER = ["features", "improvements", "insights", "issues"];
+  var CATEGORY_LABEL = { "features": "Features", "improvements": "Improvements", "insights": "Insights", "issues": "Issues" };
+  var VIEWS = ["dashboard", "tasks", "notes", "devlog"];
+
+  var SOLUTION = "";
+  var PROJECTS = [];            // { id, title, ok, error, manifest }
+  var DATA = { tasks: [], notes: [] };
+  var byKey = {};               // "project/task-id" -> task ; "project/notes/..." -> note
+  var byFile = {};              // "project/<file path>" -> task or note (to resolve relative links)
+  var ongoingAtLoad = {};       // "project|stage" -> true
+  var selection = "all";        // "all" or a project id
+  var route = { kind: "overview", view: "overview" };
+  var sessionToken = null;
+  var dragKey = null;
+  var lastRefresh = 0;
+  var restoreScroll = null;     // scroll position of the content area to keep during the next render()
+  var pendingScroll = null;     // same, but applied after the Markdown body has been loaded
+
+  /* ---------------- helpers ---------------- */
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var enc = encodeURIComponent;
+  function $(id) { return document.getElementById(id); }
+  function statusKey(s) { return STATUS_LABEL[s] ? s : "unstaged"; }
+  function pill(status) { var k = statusKey(status); return '<span class="pill pill-' + k + '">' + STATUS_LABEL[k] + "</span>"; }
+  function catLabel(c) { return CATEGORY_LABEL[c] || c; }
+  function projTitle(pid) { var p = PROJECTS.filter(function (x) { return x.id === pid; })[0]; return p ? p.title : pid; }
+  function chip(pid) { return selection === "all" ? '<span class="pill pill-project">' + esc(projTitle(pid)) + "</span>" : ""; }
+  function byUpdatedDesc(a, b) { return a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : (a.key < b.key ? -1 : 1); }
+  function byIdAsc(a, b) { return a.key < b.key ? -1 : a.key > b.key ? 1 : 0; }
+  function isDone(t) { return t.status === "done"; }
+
+  function hView(view) { return "#/" + (selection === "all" ? "" : "p/" + enc(selection) + "/") + (view === "overview" ? "" : view); }
+  function hTask(t) { return "#/p/" + enc(t.project) + "/task/" + enc(t.id); }
+  function hNote(n) { return "#/p/" + enc(n.project) + "/note/" + enc(n.file); }
+  function hStage(pid, stage) { return "#/p/" + enc(pid) + "/stage/" + enc(stage || "__unassigned"); }
+  function hItem(it) { return it.kind === "task" ? hTask(it) : hNote(it); }
+
+  function fetchJson(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status + " for " + url);
+      return r.json();
+    });
+  }
+  function fetchText(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status + " for " + url);
+      return r.text();
+    });
+  }
+
+  var toastTimer = null;
+  function toast(msg, isErr) {
+    var el = $("toast");
+    el.textContent = msg;
+    el.className = "toast" + (isErr ? " err" : "");
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.hidden = true; }, isErr ? 8000 : 5000);
+  }
+
+  /* ---------------- data loading ---------------- */
+
+  function loadAll() {
+    return fetchJson("/projects.json").then(function (cfg) {
+      SOLUTION = cfg.solution || "";
+      return Promise.all((cfg.projects || []).map(function (p) {
+        return fetchJson("/p/" + enc(p.id) + "/board/manifest.json").then(function (m) {
+          if (m.schema !== 1) throw new Error("unsupported manifest format (schema " + m.schema + "); run: node sync-manifests.mjs --project " + p.id);
+          return { id: p.id, title: p.title || p.id, ok: true, manifest: m };
+        }).catch(function (e) {
+          return { id: p.id, title: p.title || p.id, ok: false, error: String(e.message || e) };
+        });
+      }));
+    }).then(function (list) {
+      PROJECTS = list;
+      DATA = { tasks: [], notes: [] };
+      byKey = {};
+      byFile = {};
+      list.forEach(function (p) {
+        if (!p.ok) return;
+        p.manifest.tasks.forEach(function (t) {
+          t.project = p.id; t.kind = "task"; t.key = p.id + "/" + t.id;
+          DATA.tasks.push(t); byKey[t.key] = t; byFile[p.id + "/" + t.file] = t;
+        });
+        p.manifest.notes.forEach(function (n) {
+          n.project = p.id; n.kind = "note"; n.key = p.id + "/" + n.file; n.id = n.key;
+          DATA.notes.push(n); byKey[n.key] = n; byFile[n.key] = n;
+        });
+      });
+      ongoingAtLoad = {};
+      stageGroups(DATA.tasks).forEach(function (g) { if (!g.closed) ongoingAtLoad[g.project + "|" + g.stage] = true; });
+      var latest = "";
+      list.forEach(function (p) { if (p.ok && p.manifest.generated > latest) latest = p.manifest.generated; });
+      var txt = "snapshot " + (latest || "—");
+      $("snapshotLine").textContent = txt;
+      $("snapshotPill").textContent = txt;
+      $("brandEyebrow").textContent = SOLUTION || "Workflow Hub";
+      lastRefresh = Date.now();
+    });
+  }
+
+  /* ---------------- selection and filtering ---------------- */
+
+  function visibleItems() {
+    var f = function (x) { return selection === "all" || x.project === selection; };
+    return { tasks: DATA.tasks.filter(f), notes: DATA.notes.filter(f) };
+  }
+  // Every project that loaded is offered in the switcher, also an empty one (it is marked "(empty)").
+  function switchableProjects() {
+    return PROJECTS.filter(function (p) { return p.ok; });
+  }
+  function isEmptyProject(p) { return p.manifest.tasks.length + p.manifest.notes.length === 0; }
+  function categories(notes) {
+    var extra = [];
+    notes.forEach(function (n) { if (CATEGORY_ORDER.indexOf(n.category) === -1 && extra.indexOf(n.category) === -1) extra.push(n.category); });
+    return CATEGORY_ORDER.concat(extra.sort());
+  }
+  function stageGroups(tasks) {
+    var map = {}, order = [];
+    tasks.forEach(function (t) {
+      var k = t.project + "|" + (t.stage || "");
+      if (!map[k]) { map[k] = { project: t.project, stage: t.stage || "", tasks: [] }; order.push(k); }
+      map[k].tasks.push(t);
+    });
+    var arr = order.map(function (k) { return map[k]; });
+    arr.forEach(function (g) {
+      g.unassigned = !g.stage;
+      g.closed = !g.unassigned && g.tasks.every(isDone);
+      g.name = g.unassigned ? "Unassigned" : g.stage;
+      g.tasks.sort(byIdAsc);
+    });
+    arr.sort(function (a, b) {
+      return (a.closed ? 1 : 0) - (b.closed ? 1 : 0) || (a.unassigned ? 1 : 0) - (b.unassigned ? 1 : 0) ||
+        (a.project < b.project ? -1 : a.project > b.project ? 1 : 0) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+    });
+    return arr;
+  }
+  function groupLabel(g) { return selection === "all" ? projTitle(g.project) + " / " + g.name : g.name; }
+
+  /* ---------------- routing ---------------- */
+
+  function parseHash() {
+    var raw = location.hash.replace(/^#\/?/, "");
+    var seg = raw ? raw.split("/").map(function (s) { try { return decodeURIComponent(s); } catch (e) { return s; } }) : [];
+    var known = function (pid) { return PROJECTS.some(function (p) { return p.id === pid; }); };
+    if (seg.length === 0) return { kind: "list", view: "overview", sel: "all" };
+    if (seg[0] !== "p") return { kind: "list", view: VIEWS.indexOf(seg[0]) >= 0 ? seg[0] : "overview", sel: "all" };
+    var pid = seg[1];
+    if (!pid || !known(pid)) return { kind: "list", view: "overview", sel: "all" };
+    if (seg.length === 2) return { kind: "list", view: "overview", sel: pid };
+    if (seg[2] === "task" && seg[3]) return { kind: "task", project: pid, id: seg[3] };
+    if (seg[2] === "note" && seg[3]) return { kind: "note", project: pid, file: seg[3] };
+    if (seg[2] === "stage" && seg[3]) return { kind: "stage", project: pid, stage: seg[3] === "__unassigned" ? "" : seg[3] };
+    return { kind: "list", view: VIEWS.indexOf(seg[2]) >= 0 ? seg[2] : "overview", sel: pid };
+  }
+  function saveSelection() { try { localStorage.setItem("hub.selection", selection); } catch (e) { /* blocked */ } }
+  function restoreSelection() {
+    try {
+      var s = localStorage.getItem("hub.selection");
+      if (s && (s === "all" || PROJECTS.some(function (p) { return p.id === s; }))) selection = s;
+    } catch (e) { /* blocked */ }
+  }
+
+  function render() {
+    route = parseHash();
+    if (route.kind === "list") { selection = route.sel; saveSelection(); }
+    buildSwitcher();
+    buildSidebar($("searchBox").value);
+    var scroll = $("contentScroll");
+    if (route.kind === "list") {
+      if (route.view === "overview") renderOverview();
+      else if (route.view === "dashboard") renderDashboard();
+      else if (route.view === "tasks") renderAllTasks();
+      else if (route.view === "notes") renderAllNotes();
+      else if (route.view === "devlog") renderDevlog();
+    } else if (route.kind === "task") renderTask(byKey[route.project + "/" + route.id]);
+    else if (route.kind === "note") renderNote(byKey[route.project + "/" + route.file]);
+    else if (route.kind === "stage") renderStage(route.project, route.stage);
+    // A normal navigation starts at the top. A refresh or a status move keeps the position of the reader.
+    if (restoreScroll !== null) { scroll.scrollTop = restoreScroll; pendingScroll = restoreScroll; restoreScroll = null; }
+    else { scroll.scrollTop = 0; pendingScroll = null; }
+  }
+
+  // Render the current page again and keep the scroll position of the content area.
+  function renderKeep() {
+    restoreScroll = $("contentScroll").scrollTop;
+    render();
+  }
+
+  // Called when an asynchronously loaded body has been inserted: put the reader back where they were.
+  function applyPendingScroll() {
+    if (pendingScroll === null) return;
+    $("contentScroll").scrollTop = pendingScroll;
+    pendingScroll = null;
+  }
+
+  /* ---------------- switcher and sidebar ---------------- */
+
+  function buildSwitcher() {
+    var q = switchableProjects();
+    var el = $("switcher");
+    if (q.length <= 1) { el.hidden = true; el.innerHTML = ""; return; }
+    var view = route.kind === "list" ? route.view : "overview";
+    var h = function (pid) { return "#/" + (pid === "all" ? "" : "p/" + enc(pid) + "/") + (view === "overview" ? "" : view); };
+    var html = '<label class="switcher-label" for="projectSelect">Project</label><select id="projectSelect" class="project-select">' +
+      '<option value="all"' + (selection === "all" ? " selected" : "") + ">All projects</option>";
+    q.forEach(function (p) { html += '<option value="' + esc(p.id) + '"' + (selection === p.id ? " selected" : "") + ">" + esc(p.title) + (isEmptyProject(p) ? " (empty)" : "") + "</option>"; });
+    html += "</select>";
+    el.innerHTML = html;
+    el.hidden = false;
+    $("projectSelect").addEventListener("change", function (e) { location.hash = h(e.target.value); });
+  }
+
+  function matches(item, q) { return ((item.key || "") + " " + item.title).toLowerCase().indexOf(q) !== -1; }
+  function activeKey() { return route.kind === "task" ? route.project + "/" + route.id : route.kind === "note" ? route.project + "/" + route.file : ""; }
+
+  function navItem(it) {
+    var active = it.key === activeKey() ? " active" : "";
+    var idLabel = it.kind === "task" ? it.id : it.category;
+    return '<a href="' + hItem(it) + '" class="nav-item' + active + '" title="' + esc(it.title) + '">' +
+      '<span class="item-id">' + (selection === "all" ? esc(projTitle(it.project)) + " · " : "") + esc(idLabel) + "</span>" +
+      '<span class="item-title">' + esc(it.title) + "</span></a>";
+  }
+
+  function stageNavItem(g) {
+    var done = g.tasks.filter(isDone).length;
+    var active = route.kind === "stage" && route.project === g.project && route.stage === g.stage ? " active" : "";
+    return '<a href="' + hStage(g.project, g.stage) + '" class="nav-item' + active + '" title="' + esc(groupLabel(g)) + '">' +
+      '<span class="item-id">' + (g.unassigned ? "no stage" : g.closed ? "closed" : "ongoing") + "</span>" +
+      '<span class="item-title">' + esc(groupLabel(g)) + "</span></a>" +
+      '<div class="nav-empty" style="padding-left:24px;margin-top:-4px;">' + done + " / " + g.tasks.length + " done</div>";
+  }
+
+  function navLink(view, label, icon) {
+    var on = route.kind === "list" && route.view === view;
+    return '<a href="' + hView(view) + '" class="nav-home' + (on ? " active" : "") + '">' + icon + " " + label + "</a>";
+  }
+
+  function buildSidebar(filterText) {
+    var q = (filterText || "").trim().toLowerCase();
+    var vis = visibleItems();
+    var html = "";
+
+    PROJECTS.filter(function (p) { return !p.ok; }).forEach(function (p) {
+      html += '<div class="nav-warn">⚠ ' + esc(p.title) + ": " + esc(p.error) + "</div>";
+    });
+
+    html += navLink("overview", "Overview", "▸") + navLink("dashboard", "Dashboard", "▦") + navLink("devlog", "Devlog", "✎");
+
+    var onTasks = route.kind === "list" && route.view === "tasks";
+    html += '<div class="nav-group"><div class="nav-group-title"><a href="' + hView("tasks") + '"' + (onTasks ? ' class="active"' : "") + ">Tasks</a><span class=\"mono\">" + vis.tasks.length + "</span></div>";
+    if (q) {
+      var m = vis.tasks.filter(function (t) { return matches(t, q); });
+      html += '<div class="nav-subgroup"><div class="nav-subgroup-title">Matching<span class="nav-subgroup-count">' + m.length + "</span></div>";
+      html += m.length ? m.sort(byIdAsc).map(navItem).join("") : '<div class="nav-empty">no matches</div>';
+      html += "</div>";
+    } else {
+      stageGroups(vis.tasks).forEach(function (g) { html += stageNavItem(g); });
+    }
+    html += "</div>";
+
+    var onNotes = route.kind === "list" && route.view === "notes";
+    html += '<div class="nav-group"><div class="nav-group-title"><a href="' + hView("notes") + '"' + (onNotes ? ' class="active"' : "") + ">Notes</a><span class=\"mono\">" + vis.notes.length + "</span></div>";
+    categories(vis.notes).forEach(function (cat) {
+      var items = vis.notes.filter(function (n) { return n.category === cat; });
+      if (q) items = items.filter(function (n) { return matches(n, q); });
+      html += '<div class="nav-subgroup"><div class="nav-subgroup-title">' + esc(catLabel(cat)) + '<span class="nav-subgroup-count">' + items.length + "</span></div>";
+      html += items.length ? items.sort(function (a, b) { return a.key < b.key ? -1 : 1; }).map(navItem).join("") : '<div class="nav-empty">' + (q ? "no matches" : "empty") + "</div>";
+      html += "</div>";
+    });
+    html += "</div>";
+    var nav = $("navScroll");
+    var navTop = nav.scrollTop;
+    nav.innerHTML = html;
+    nav.scrollTop = navTop; // the sidebar stays where it was when it is rebuilt
+  }
+
+  /* ---------------- shared page pieces ---------------- */
+
+  function setPage(html) { $("contentScroll").innerHTML = html; }
+
+  function warningsHtml() {
+    var bad = PROJECTS.filter(function (p) { return !p.ok; });
+    return bad.map(function (p) { return '<div class="warn-box">⚠ <b>' + esc(p.title) + "</b> could not be loaded: " + esc(p.error) + "</div>"; }).join("");
+  }
+
+  function taskCard(t) {
+    return '<a class="open-card" href="' + hTask(t) + '"><div class="row1">' + pill(t.status) + chip(t.project) +
+      '<span class="id mono">' + esc(t.id) + '</span><span class="title">' + esc(t.title) + "</span></div>" +
+      (t.note ? '<div class="desc">' + esc(t.note) + "</div>" : "") + "</a>";
+  }
+
+  function stageRow(g) {
+    var done = g.tasks.filter(isDone).length, total = g.tasks.length;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var badge = g.unassigned ? "" : (g.closed ? ' <span class="pill pill-done" style="margin-left:6px;">Complete</span>' : ' <span class="pill pill-backlog" style="margin-left:6px;">Ongoing</span>');
+    return '<a class="stage-row" href="' + hStage(g.project, g.stage) + '"><div class="stage-name">' + esc(groupLabel(g)) + badge + "</div>" +
+      '<div class="stage-bar"><span style="width:' + pct + '%;background:var(--st-done);"></span></div>' +
+      '<div class="stage-count">' + done + " / " + total + " done</div></a>";
+  }
+
+  function notesByCategoryHtml(notes) {
+    return categories(notes).map(function (cat) {
+      var items = notes.filter(function (n) { return n.category === cat; });
+      var lis = items.map(function (n) { return '<li><a href="' + hNote(n) + '">' + esc(n.title) + "</a> " + chip(n.project) + "</li>"; }).join("");
+      return '<div class="cat-card"><div class="cat-name">' + esc(catLabel(cat)) + ' <span class="mono" style="color:var(--faint);font-weight:400;">(' + items.length + ")</span></div><ul>" + lis + "</ul></div>";
+    }).join("");
+  }
+
+  function recentRow(it) {
+    var kindPill = it.kind === "task" ? '<span class="pill pill-kind-task">Task</span>' : '<span class="pill pill-kind-note">Note</span>';
+    var verb = it.created === it.updated ? "added" : "updated";
+    return '<a class="open-card" href="' + hItem(it) + '"><div class="row1">' + kindPill + chip(it.project) +
+      '<span class="id mono">' + esc(it.kind === "task" ? it.id : it.category) + '</span><span class="title">' + esc(it.title) + "</span>" +
+      '<span class="when mono">' + verb + " " + esc(it.updated) + "</span></div></a>";
+  }
+
+  /* ---------------- views ---------------- */
+
+  function setCrumb(html) { $("crumb").innerHTML = html; }
+  function scopeLabel() { return selection === "all" ? "All projects" : projTitle(selection); }
+
+  function renderOverview() {
+    setCrumb(esc(scopeLabel()) + " <b>Overview</b>");
+    var vis = visibleItems();
+    var counts = {};
+    STATUS_ORDER.forEach(function (s) { counts[s] = 0; });
+    vis.tasks.forEach(function (t) { counts[statusKey(t.status)]++; });
+    var tiles = [["progress", "in-progress", "In Progress"], ["testing", "testing", "Testing"], ["backlog", "backlog", "Backlog"], ["done", "done", "Done"], ["unstaged", "unstaged", "Unstaged"]]
+      .map(function (x) { return '<div class="stat-tile acc-' + x[0] + '"><div class="n mono">' + counts[x[1]] + '</div><div class="l"><span class="status-swatch sw-' + x[1] + '"></span>' + x[2] + "</div></div>"; }).join("");
+    var recent = vis.tasks.concat(vis.notes).sort(byUpdatedDesc).slice(0, 10);
+    var groups = stageGroups(vis.tasks);
+    var open = vis.tasks.filter(function (t) { return !isDone(t); }).sort(byIdAsc);
+    setPage(
+      warningsHtml() +
+      '<div class="ov-lede">Tasks and working notes of <strong>' + esc(scopeLabel()) + "</strong>. Run <code class=\"mono\">node sync-manifests.mjs --all</code> after editing files, or move cards on the Dashboard.</div>" +
+      '<div class="stat-row">' + tiles + "</div>" +
+      '<div class="ov-section"><h2>Recent changes</h2><div class="open-list">' + (recent.length ? recent.map(recentRow).join("") : '<div class="state-msg" style="padding:8px 0;">Nothing yet.</div>') + "</div></div>" +
+      '<div class="ov-section"><h2>Stages</h2><div class="stage-list">' + (groups.length ? groups.map(stageRow).join("") : '<div class="state-msg" style="padding:8px 0;">No tasks yet.</div>') + "</div></div>" +
+      '<div class="ov-section"><h2>Open tasks (' + open.length + ')</h2><div class="open-list">' + (open.length ? open.map(taskCard).join("") : '<div class="state-msg" style="padding:8px 0;">Nothing outside Done.</div>') + "</div></div>" +
+      '<div class="ov-section"><h2>Notes by category</h2><div class="cat-grid">' + notesByCategoryHtml(vis.notes) + "</div></div>"
+    );
+  }
+
+  function renderDashboard() {
+    setCrumb(esc(scopeLabel()) + " <b>Dashboard</b>");
+    var vis = visibleItems();
+    var tasks = vis.tasks.filter(function (t) { return !t.stage || ongoingAtLoad[t.project + "|" + t.stage]; });
+    var cols = STATUS_ORDER.filter(function (s) { return s !== "unstaged" || tasks.some(function (t) { return statusKey(t.status) === "unstaged"; }); });
+    var columns = cols.map(function (status) {
+      var items = tasks.filter(function (t) { return statusKey(t.status) === status; }).sort(byIdAsc);
+      var cards = items.length ? items.map(function (t) {
+        return '<a class="kanban-card" draggable="true" data-key="' + esc(t.key) + '" href="' + hTask(t) + '"><span class="id mono">' + esc(t.id) + "</span>" +
+          '<span class="title">' + esc(t.title) + "</span>" + (selection === "all" ? '<span class="id mono" style="margin:4px 0 0;">' + esc(projTitle(t.project)) + "</span>" : "") + "</a>";
+      }).join("") : '<div class="kanban-empty">nothing here</div>';
+      return '<div class="kanban-col kanban-' + status + '" data-status="' + status + '"><div class="kanban-head"><span class="status-swatch sw-' + status + '"></span>' + STATUS_LABEL[status] +
+        '<span class="kanban-count mono">' + items.length + '</span></div><div class="kanban-cards">' + cards + "</div></div>";
+    }).join("");
+    setPage(
+      warningsHtml() +
+      '<div class="ov-lede">Tasks of the ongoing stages (and tasks without a stage). Closed stages have their own page in the sidebar.</div>' +
+      '<div class="kanban-hint">Drag a card to another column to change its status. Cards cannot be dropped into Unstaged.</div>' +
+      '<div class="kanban-board" style="--cols:' + cols.length + '">' + columns + "</div>"
+    );
+    wireDrag();
+  }
+
+  function renderAllTasks() {
+    setCrumb(esc(scopeLabel()) + " <b>Tasks</b>");
+    var vis = visibleItems();
+    var groups = stageGroups(vis.tasks);
+    var html = groups.map(function (g) {
+      return '<div class="ov-section"><h2>' + esc(groupLabel(g)) + " (" + g.tasks.length + ")</h2>" +
+        (g.unassigned ? "" : '<div class="stage-list" style="margin-bottom:10px;">' + stageRow(g) + "</div>") +
+        '<div class="open-list">' + g.tasks.map(taskCard).join("") + "</div></div>";
+    }).join("");
+    setPage(warningsHtml() + '<div class="ov-lede">Every task (' + vis.tasks.length + " total), grouped by stage.</div>" + (html || '<div class="state-msg">No tasks yet.</div>'));
+  }
+
+  function renderAllNotes() {
+    setCrumb(esc(scopeLabel()) + " <b>Notes</b>");
+    var vis = visibleItems();
+    setPage(warningsHtml() + '<div class="ov-lede">Every note (' + vis.notes.length + ' total).</div><div class="ov-section"><div class="cat-grid">' + notesByCategoryHtml(vis.notes) + "</div></div>");
+  }
+
+  function renderStage(pid, stage) {
+    var tasks = DATA.tasks.filter(function (t) { return t.project === pid && (t.stage || "") === stage; });
+    var g = stageGroups(tasks)[0];
+    if (!g) { setCrumb("<b>Stage</b>"); setPage('<div class="state-msg">This stage has no tasks.</div>'); return; }
+    setCrumb("Tasks / " + esc(projTitle(pid)) + " <b>" + esc(g.name) + "</b>");
+    var notice = g.closed ? '<div class="notice">All tasks of this stage are done. Ask the AI to propose the CHANGELOG and README update for this stage.</div>' : "";
+    setPage(notice + '<div class="ov-section"><div class="stage-list">' + stageRow(g) + '</div></div><div class="ov-section"><h2>Tasks (' + g.tasks.length + ')</h2><div class="open-list">' + g.tasks.map(taskCard).join("") + "</div></div>");
+  }
+
+  function renderDevlog() {
+    setCrumb(esc(scopeLabel()) + " <b>Devlog</b>");
+    if (selection === "all") {
+      var ps = PROJECTS.filter(function (p) { return p.ok; });
+      setPage('<div class="ov-lede">The devlog belongs to one project. Choose a project:</div><div class="open-list">' +
+        ps.map(function (p) { return '<a class="open-card" href="#/p/' + enc(p.id) + '/devlog"><div class="row1"><span class="title">' + esc(p.title) + "</span></div></a>"; }).join("") + "</div>");
+      return;
+    }
+    var pid = selection;
+    setPage('<div class="md" id="mdBody"><div class="state-msg">Loading devlog.md…</div></div>');
+    fetchText("/p/" + enc(pid) + "/devlog.md").then(function (text) {
+      if (route.kind !== "list" || route.view !== "devlog" || selection !== pid) return;
+      $("mdBody").innerHTML = renderMarkdown(text, "devlog.md", pid);
+      applyPendingScroll();
+    }).catch(function (err) {
+      pendingScroll = null;
+      if ($("mdBody")) $("mdBody").innerHTML = '<div class="state-msg">Could not load devlog.md (' + esc(err.message) + ").</div>";
+    });
+  }
+
+  /* ---------------- markdown ---------------- */
+
+  function stripFrontmatter(text) { return text.replace(/^\uFEFF/, "").replace(/^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/, ""); }
+
+  function renderMarkdown(text, file, pid) {
+    var html = marked.parse(stripFrontmatter(text));
+    html = html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, "</table></div>");
+    var dir = file.indexOf("/") >= 0 ? file.slice(0, file.lastIndexOf("/") + 1) : "";
+    // A relative path in the note is resolved against the folder of the Markdown file ("." and ".." allowed).
+    // It returns the path inside the project, or "" if it would leave the project.
+    function resolveRel(rel) {
+      var out = [];
+      var ok = (dir + rel).split("/").every(function (s) {
+        if (!s || s === ".") return true;
+        if (s === "..") return out.pop() !== undefined;
+        out.push(s);
+        return true;
+      });
+      return ok ? out.join("/") : "";
+    }
+    function decode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+    var isExternal = function (u) { return /^([a-z][a-z0-9+.-]*:|\/|#|data:)/i.test(u); };
+    // Relative images are served from the project.
+    html = html.replace(/<img([^>]*?) src="([^"]+)"/g, function (all, pre, src) {
+      if (isExternal(src)) return all;
+      var path = resolveRel(decode(src));
+      if (!path) return all;
+      return "<img" + pre + ' src="/p/' + enc(pid) + "/" + path.split("/").map(enc).join("/") + '"';
+    });
+    // Relative links: to a task or note of the board -> the board page; to another file of the project -> the file.
+    return html.replace(/<a href="([^"]+)"/g, function (all, href) {
+      if (isExternal(href)) return all;
+      var path = resolveRel(decode(href.split("#")[0]));
+      if (!path) return all;
+      var item = byFile[pid + "/" + path];
+      if (item) return '<a href="' + (item.kind === "task" ? hTask(item) : hNote(item)) + '"';
+      return '<a target="_blank" rel="noopener" href="/p/' + enc(pid) + "/" + path.split("/").map(enc).join("/") + '"';
+    });
+  }
+
+  function loadBody(item) {
+    var mine = activeKey();
+    fetchText("/p/" + enc(item.project) + "/" + item.file.split("/").map(enc).join("/")).then(function (text) {
+      if (activeKey() !== mine) return;
+      $("mdBody").innerHTML = renderMarkdown(text, item.file, item.project);
+      applyPendingScroll();
+    }).catch(function (err) {
+      if (activeKey() !== mine) return;
+      pendingScroll = null;
+      $("mdBody").innerHTML = '<div class="state-msg">Could not load this file (' + esc(err.message) + ").</div>";
+    });
+  }
+
+  /* ---------------- task and note pages ---------------- */
+
+  function relChip(ref) {
+    var t = byKey[ref];
+    if (t && t.kind === "task") {
+      return '<a class="rel-chip" href="' + hTask(t) + '"><span class="pill pill-project">' + esc(projTitle(t.project)) + '</span><span class="id mono">' + esc(t.id) + '</span><span class="rel-title">' + esc(t.title) + "</span>" + pill(t.status) + "</a>";
+    }
+    return '<span class="rel-chip rel-warn" title="Reference cannot be resolved">⚠ ' + esc(ref) + " (not found)</span>";
+  }
+
+  function renderTask(t) {
+    if (!t) { setCrumb("<b>Task</b>"); setPage('<div class="state-msg">This task is not in the manifests. Try Refresh.</div>'); return; }
+    setCrumb("Tasks / " + esc(projTitle(t.project)) + " <b>" + esc(t.id) + "</b>");
+    var opts = MOVE_TARGETS.map(function (s) { return '<option value="' + s + '"' + (t.status === s ? " selected" : "") + ">" + STATUS_LABEL[s] + "</option>"; }).join("");
+    if (t.status === "unstaged") opts = '<option value="unstaged" selected disabled>Unstaged</option>' + opts;
+    var sourceKey = t.source ? t.project + "/" + t.source : "";
+    var source = sourceKey && byKey[sourceKey] ? '<span>source <a href="' + hNote(byKey[sourceKey]) + '">' + esc(t.source) + "</a></span>" : (t.source ? "<span>source " + esc(t.source) + "</span>" : "");
+    var rel = (t.related || []).map(relChip).join(""), relBy = (t.relatedBy || []).map(relChip).join("");
+    setPage(
+      '<div class="doc-header"><div class="doc-badges">' + pill(t.status) + '<span class="pill pill-project">' + esc(projTitle(t.project)) + "</span>" +
+      '<span class="pill pill-stage">' + esc(t.stage || "Unassigned") + '</span><span class="pill pill-stage mono">' + esc(t.id) + "</span></div>" +
+      '<div class="doc-title">' + esc(t.title) + "</div>" +
+      '<div class="doc-meta"><span>created ' + esc(t.created) + "</span><span>updated " + esc(t.updated) + "</span>" + source + "</div>" +
+      (t.note ? '<div class="doc-meta"><span>note: ' + esc(t.note) + "</span></div>" : "") +
+      '<div class="status-line">Status <select class="status-select" id="statusSelect">' + opts + "</select><span>changes the <code class=\"mono\">status:</code> line in the task file</span></div>" +
+      (rel ? '<div class="doc-h">Related</div><div class="rel-list">' + rel + "</div>" : "") +
+      (relBy ? '<div class="doc-h">Related by</div><div class="rel-list">' + relBy + "</div>" : "") +
+      '</div><div class="md" id="mdBody"><div class="state-msg">Loading ' + esc(t.file) + "…</div></div>"
+    );
+    $("statusSelect").addEventListener("change", function (e) {
+      var to = e.target.value;
+      moveTask(t, to).then(function (ok) { if (!ok) renderKeep(); });
+    });
+    loadBody(t);
+  }
+
+  function renderNote(n) {
+    if (!n) { setCrumb("<b>Note</b>"); setPage('<div class="state-msg">This note is not in the manifests. Try Refresh.</div>'); return; }
+    setCrumb("Notes / " + esc(catLabel(n.category)) + " <b>" + esc(n.title) + "</b>");
+    setPage(
+      '<div class="doc-header"><div class="doc-badges"><span class="pill pill-project">' + esc(projTitle(n.project)) + '</span><span class="pill pill-stage">' + esc(catLabel(n.category)) + "</span>" +
+      (n.archive ? '<span class="pill pill-stage" title="Title and dates were not recorded for this note">Archive ' + esc(n.archive) + "</span>" : "") + "</div>" +
+      '<div class="doc-title">' + esc(n.title) + '</div><div class="doc-meta"><span>created ' + esc(n.created) + "</span><span>updated " + esc(n.updated) + "</span><span>" + esc(n.file) + "</span></div></div>" +
+      '<div class="md" id="mdBody"><div class="state-msg">Loading ' + esc(n.file) + "…</div></div>"
+    );
+    loadBody(n);
+  }
+
+  /* ---------------- moving a task (the only write) ---------------- */
+
+  function getToken(force) {
+    if (sessionToken && !force) return Promise.resolve(sessionToken);
+    return fetchJson("/api/session").then(function (j) { sessionToken = j.token; return sessionToken; });
+  }
+
+  function postMove(t, from, to, token) {
+    return fetch("/api/task-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Hub-Token": token },
+      body: JSON.stringify({ project: t.project, id: t.id, from: from, to: to })
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (b) { return { code: r.status, body: b }; }); });
+  }
+
+  // Resolves true if the move was saved.
+  function moveTask(t, to) {
+    if (t && byKey[t.key]) t = byKey[t.key]; // the manifests may have been reloaded since the page was drawn
+    if (!t || t.status === to) return Promise.resolve(true);
+    if (MOVE_TARGETS.indexOf(to) < 0) { toast("A task cannot be moved into " + STATUS_LABEL[to] + ".", true); return Promise.resolve(false); }
+    var from = t.status;
+    return getToken(false).then(function (tok) {
+      return postMove(t, from, to, tok).then(function (res) {
+        if (res.code === 403) { return getToken(true).then(function (tok2) { return postMove(t, from, to, tok2); }); }
+        return res;
+      });
+    }).then(function (res) {
+      if (res.code === 200 && res.body.task) {
+        var nt = res.body.task;
+        ["status", "updated", "note", "title", "stage"].forEach(function (f) { t[f] = nt[f]; });
+        toast("Moved " + t.id + " to " + STATUS_LABEL[statusKey(t.status)] + (res.body.stageComplete ? ". Stage \"" + t.stage + "\" is complete: ask the AI to propose the CHANGELOG and README update." : "."), false);
+        renderKeep();
+        return true;
+      }
+      toast((res.body && res.body.error) || ("Move failed (HTTP " + res.code + ")"), true);
+      if (res.code === 409) { return loadAll().then(renderKeep).then(function () { return false; }); }
+      return false;
+    }).catch(function (e) { toast("Move failed: " + e.message, true); return false; });
+  }
+
+  function wireDrag() {
+    var cards = document.querySelectorAll(".kanban-card");
+    Array.prototype.forEach.call(cards, function (c) {
+      c.addEventListener("dragstart", function (e) {
+        dragKey = c.getAttribute("data-key");
+        c.classList.add("dragging");
+        try { e.dataTransfer.setData("text/plain", dragKey); e.dataTransfer.effectAllowed = "move"; } catch (x) { /* ignore */ }
+      });
+      c.addEventListener("dragend", function () {
+        c.classList.remove("dragging");
+        Array.prototype.forEach.call(document.querySelectorAll(".kanban-col"), function (k) { k.classList.remove("drop-ok"); });
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".kanban-col"), function (col) {
+      var status = col.getAttribute("data-status");
+      var allowed = MOVE_TARGETS.indexOf(status) >= 0;
+      col.addEventListener("dragover", function (e) {
+        if (!allowed || !dragKey) return;
+        var t = byKey[dragKey];
+        if (!t || t.status === status) return;
+        e.preventDefault();
+        col.classList.add("drop-ok");
+      });
+      col.addEventListener("dragleave", function () { col.classList.remove("drop-ok"); });
+      col.addEventListener("drop", function (e) {
+        col.classList.remove("drop-ok");
+        if (!allowed) return;
+        e.preventDefault();
+        var key = dragKey; dragKey = null;
+        var t = key && byKey[key];
+        if (t) moveTask(t, status);
+      });
+    });
+  }
+
+  /* ---------------- chrome ---------------- */
+
+  function closeMobileNav() { $("sidebar").classList.remove("open"); $("backdrop").classList.remove("open"); }
+  $("menuToggle").addEventListener("click", function () { $("sidebar").classList.toggle("open"); $("backdrop").classList.toggle("open"); });
+  $("backdrop").addEventListener("click", closeMobileNav);
+  $("navScroll").addEventListener("click", function (e) { if (e.target.closest && e.target.closest("a")) closeMobileNav(); });
+  $("searchBox").addEventListener("input", function (e) { buildSidebar(e.target.value); });
+
+  // Reload the manifests. The page is drawn again only when something changed, and then at the same scroll position.
+  // So switching to another tab or window and back never moves the page.
+  var refreshing = false;
+  function refresh(manual) {
+    if (refreshing) return Promise.resolve();
+    refreshing = true;
+    var before = JSON.stringify(PROJECTS);
+    return loadAll().then(function () {
+      if (JSON.stringify(PROJECTS) !== before) renderKeep();
+      else if (manual === true) toast("The board is up to date.", false);
+    }).catch(function (err) {
+      toast("Could not refresh the board: " + (err && err.message ? err.message : err) + ". The page stays as it is.", true);
+    }).then(function () { refreshing = false; });
+  }
+  $("refreshBtn").addEventListener("click", function () { refresh(true); });
+  window.addEventListener("focus", function () { if (DATA && Date.now() - lastRefresh > 5000) refresh(false); });
+  window.addEventListener("hashchange", function () { render(); });
+
+  function showFatal(err) {
+    $("contentScroll").innerHTML = '<div class="state-msg">Could not load the board (' + esc(err.message || err) + "). Start the hub with <code class=\"mono\">node serve.mjs</code> and open the printed address. See README.md.</div>";
+  }
+
+  loadAll().then(function () {
+    var hasRoute = location.hash && location.hash.length > 2;
+    if (!hasRoute) restoreSelection();
+    else if (parseHash().kind !== "list") restoreSelection();
+    if (!hasRoute && selection !== "all") location.replace(hView("overview"));
+    else render();
+  }).catch(showFatal);
+})();
+</script>
+
+</body>
+</html>

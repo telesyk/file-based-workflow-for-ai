@@ -1,0 +1,20 @@
+# Allow-list: everything in this folder is ignored unless it is listed below.
+# New files stay private until someone adds them here on purpose.
+/*
+
+# Shared files and folders
+!/.gitignore
+!/README.md
+!/LICENSE
+!/THIRD-PARTY.md
+!/ADD-PROJECT.md
+!/DESIGN.md
+!/hub-template/
+!/project-template/
+
+# A global git ignore file may hide Markdown files and .workflow folders.
+# Inside the templates they belong to the content, so they are included again here.
+!/hub-template/**/*.md
+!/project-template/**/*.md
+!/hub-template/**/.workflow/
+!/project-template/**/.workflow/

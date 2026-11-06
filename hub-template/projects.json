@@ -1,0 +1,7 @@
+{
+  "solution": "Template",
+  "projects": [
+    { "id": "demo",   "title": "Demo project", "path": "demo/.workflow" },
+    { "id": "shared", "title": "Shared",       "path": "shared/.workflow" }
+  ]
+}

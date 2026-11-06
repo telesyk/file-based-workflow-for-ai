@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "project": "demo",
+  "generated": "2026-11-03",
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Build the login form",
+      "status": "done",
+      "stage": "auth",
+      "source": "notes/features/login.md",
+      "created": "2026-10-01",
+      "updated": "2026-10-10",
+      "file": "tasks/task-001-login-form.md",
+      "note": "",
+      "related": [],
+      "relatedBy": []
+    },
+    {
+      "id": "task-002",
+      "title": "Password reset by e-mail",
+      "status": "done",
+      "stage": "auth",
+      "source": "notes/features/login.md",
+      "created": "2026-10-01",
+      "updated": "2026-10-12",
+      "file": "tasks/task-002-password-reset.md",
+      "note": "",
+      "related": [],
+      "relatedBy": []
+    },
+    {
+      "id": "task-003",
+      "title": "Session timeout after 30 minutes",
+      "status": "done",
+      "stage": "auth",
+      "source": "notes/features/login.md",
+      "created": "2026-10-02",
+      "updated": "2026-10-14",
+      "file": "tasks/task-003-session-timeout.md",
+      "note": "",
+      "related": [],
+      "relatedBy": []
+    },
+    {
+      "id": "task-004",
+      "title": "Add dark mode toggle",
+      "status": "in-progress",
+      "stage": "dark-mode",
+      "source": "notes/features/dark-mode.md",
+      "created": "2026-10-20",
+      "updated": "2026-10-28",
+      "file": "tasks/task-004-dark-mode-toggle.md",
+      "note": "",
+      "related": [
+        "shared/task-001"
+      ],
+      "relatedBy": []
+    },
+    {
+      "id": "task-005",
+      "title": "Define dark mode colors",
+      "status": "testing",
+      "stage": "dark-mode",
+      "source": "notes/features/dark-mode.md",
+      "created": "2026-10-20",
+      "updated": "2026-10-30",
+      "file": "tasks/task-005-dark-mode-colors.md",
+      "note": "",
+      "related": [],
+      "relatedBy": [
+        "shared/task-002"
+      ]
+    },
+    {
+      "id": "task-006",
+      "title": "Document dark mode",
+      "status": "backlog",
+      "stage": "dark-mode",
+      "source": "notes/features/dark-mode.md",
+      "created": "2026-10-28",
+      "updated": "2026-10-28",
+      "file": "tasks/task-006-dark-mode-docs.md",
+      "note": "",
+      "related": [],
+      "relatedBy": []
+    },
+    {
+      "id": "task-007",
+      "title": "Fix crash in CSV export",
+      "status": "backlog",
+      "stage": "",
+      "source": "notes/issues/export-crash.md",
+      "created": "2026-10-29",
+      "updated": "2026-11-01",
+      "file": "tasks/task-007-fix-export-crash.md",
+      "note": "",
+      "related": [],
+      "relatedBy": []
+    },
+    {
+      "id": "task-008",
+      "title": "Legacy import",
+      "status": "unstaged",
+      "stage": "dark-mode",
+      "source": "",
+      "created": "2026-10-25",
+      "updated": "2026-10-25",
+      "file": "tasks/task-008-legacy-import.md",
+      "note": "waiting for customer",
+      "related": [],
+      "relatedBy": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Dark mode",
+      "category": "features",
+      "created": "2026-10-20",
+      "updated": "2026-10-28",
+      "file": "notes/features/dark-mode.md"
+    },
+    {
+      "title": "Login",
+      "category": "features",
+      "created": "2026-09-28",
+      "updated": "2026-10-14",
+      "file": "notes/features/login.md"
+    },
+    {
+      "title": "Faster export",
+      "category": "improvements",
+      "created": "2026-10-22",
+      "updated": "2026-10-22",
+      "file": "notes/improvements/faster-export.md"
+    },
+    {
+      "title": "Idea: offline mode",
+      "category": "insights",
+      "created": "2026-10-30",
+      "updated": "2026-10-30",
+      "file": "notes/insights/idea-offline-mode.md"
+    },
+    {
+      "title": "CSV export crash",
+      "category": "issues",
+      "created": "2026-10-29",
+      "updated": "2026-11-01",
+      "file": "notes/issues/export-crash.md"
+    }
+  ]
+}

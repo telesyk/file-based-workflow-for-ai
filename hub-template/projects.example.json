@@ -1,0 +1,8 @@
+{
+  "solution": "MySolution",
+  "projects": [
+    { "id": "my-app",    "title": "MyApp",    "path": "C:/Dev/MyApp/.workflow" },
+    { "id": "other-app", "title": "OtherApp", "path": "D:/Work/OtherApp/docs/.workflow" },
+    { "id": "shared",    "title": "Shared",   "path": "shared/.workflow" }
+  ]
+}

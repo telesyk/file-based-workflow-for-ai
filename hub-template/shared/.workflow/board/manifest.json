@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "project": "shared",
+  "generated": "2026-11-03",
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Agree the theme API contract",
+      "status": "in-progress",
+      "stage": "api",
+      "source": "notes/insights/conventions.md",
+      "created": "2026-10-21",
+      "updated": "2026-10-27",
+      "file": "tasks/task-001-api-contract.md",
+      "note": "",
+      "related": [],
+      "relatedBy": [
+        "demo/task-004"
+      ]
+    },
+    {
+      "id": "task-002",
+      "title": "Name the color tokens",
+      "status": "backlog",
+      "stage": "api",
+      "source": "notes/insights/conventions.md",
+      "created": "2026-10-27",
+      "updated": "2026-10-27",
+      "file": "tasks/task-002-token-names.md",
+      "note": "",
+      "related": [
+        "demo/task-005"
+      ],
+      "relatedBy": []
+    }
+  ],
+  "notes": [
+    {
+      "title": "Shared conventions",
+      "category": "insights",
+      "created": "2026-10-21",
+      "updated": "2026-10-27",
+      "file": "notes/insights/conventions.md"
+    }
+  ]
+}
