@@ -49,7 +49,7 @@ The Markdown files are the only source of truth. The manifest is a generated cop
 | `projects.json` | hub | Optional `solution` label, and the list of projects: `id` (lowercase slug), `title`, `path` of the `.workflow` folder (absolute with forward slashes, or relative to the hub folder). |
 | `serve.mjs` | hub | Serves the board files and `/p/<id>/...` (read-only). Has one write endpoint for status changes. |
 | `sync-manifests.mjs` | hub | Reads task and note frontmatter, validates, writes each project's `board/manifest.json`. Exports `scanProject`, `buildAll`, `writeManifest` and `syncProject`. |
-| `index.html` | hub | The board. Reads all manifests, renders views, sends status changes. |
+| `index.html`, `styles.css`, `app.js` | hub | The board: the page, its styles (all colors are variables at the top) and its code. It reads all manifests, renders the views and sends status changes. |
 | `vendor/marked.min.js` | hub | Markdown renderer. One copy for all projects. |
 | `.workflow/` | each project | tasks, notes, devlog, `board/manifest.json`. Stays inside the project. |
 | `CLAUDE.md` | once per solution | AI rules, the hub's sync command and a table of the projects. For projects that share one repository, one file at the repository root covers all of them. Otherwise, one file per project. |
@@ -108,7 +108,7 @@ Fixed words (`task`, `note`, `stage`) come after the project id, so an item name
 - **Status pills.** All five values (`backlog`, `in-progress`, `testing`, `done`, `unstaged`) have a label (`STATUS_LABEL`) and a style (`.pill-<status>`). No status may render blank.
 - **Notes.** The Markdown body is rendered. A note with `archive` shows an "Archive <date>" badge. Relative links and images work (section 9).
 - **Reload.** The board reloads the manifests when its tab gets the focus, and on the "Refresh" button. The page is drawn again only if something changed, and then at the same scroll position.
-- **Look.** Light and dark mode, responsive, clean and unfussy. The page treats `file` as opaque data and never infers anything from folder names.
+- **Look.** Light and dark mode with the Ayu Light and Ayu Mirage colors (the system setting picks the theme), responsive, clean and unfussy. The page treats `file` as opaque data and never infers anything from folder names.
 
 ## 7. Flows
 
@@ -163,7 +163,7 @@ If `status:` or `updated:` is missing in the file, the server refuses and says w
 
 ## 9. Server rules (all requests)
 
-- `GET` serves only the board files of the hub (`index.html`, `vendor/marked.min.js`) and `/p/<id>/<path>`. The scripts and `projects.json` are not served as files. Inside a project, only the extensions `.md`, `.json`, `.sql` (as plain text), `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.webp`. Everything else: 404.
+- `GET` serves only the board files of the hub (`index.html`, `styles.css`, `app.js`, `vendor/marked.min.js`) and `/p/<id>/<path>`. The scripts and `projects.json` are not served as files. Inside a project, only the extensions `.md`, `.json`, `.sql` (as plain text), `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.webp`. Everything else: 404.
 - In a note, a relative link to a task or note opens that board page, a relative link to another project file opens the file in a new tab, and relative images are served from the project (`..` is resolved on the client).
 - `/projects.json` answers with the solution label and the ids and titles of the projects. It never reveals disk paths.
 - `/api/session` gives the page its token (same-origin requests only).
@@ -178,7 +178,9 @@ The template is a plain folder. To start a new solution, copy it and edit `proje
 ```
 hub-template/
 ├── README.md                  how to start, sync, add a project, move cards
-├── index.html                 the board
+├── index.html                 the board page
+├── styles.css                 colors and layout
+├── app.js                     the code of the board
 ├── projects.json              list of projects (edit this); the template lists the two samples
 ├── projects.example.json      sample entries
 ├── serve.mjs                  local server

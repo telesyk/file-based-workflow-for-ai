@@ -3,7 +3,7 @@
 //
 //   node serve.mjs [--port 8787]
 //
-// GET  /                       the board (index.html)
+// GET  /                       the board (index.html, styles.css, app.js)
 // GET  /vendor/marked.min.js   Markdown renderer
 // GET  /projects.json          project ids and titles (no paths)
 // GET  /p/<id>/<path>          read-only files of one project (allow-listed extensions)
@@ -26,7 +26,7 @@ const ALLOWED_HOSTS = new Set([`127.0.0.1:${PORT}`, `localhost:${PORT}`]);
 const MOVE_TARGETS = ['backlog', 'in-progress', 'testing', 'done'];
 const PROJECT_EXT = new Set(['.md', '.json', '.sql', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp']);
 const MIME = {
-  '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
+  '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8', '.sql': 'text/plain; charset=utf-8', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
   '.gif': 'image/gif', '.svg': 'image/svg+xml', '.webp': 'image/webp',
 };
@@ -173,7 +173,10 @@ function handle(req, res) {
   }
   if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
 
+  // The board files are an explicit list. Nothing else of the hub folder is served.
   if (path === '/' || path === '/index.html') return serveFile(req, res, join(HUB_DIR, 'index.html'));
+  if (path === '/styles.css') return serveFile(req, res, join(HUB_DIR, 'styles.css'));
+  if (path === '/app.js') return serveFile(req, res, join(HUB_DIR, 'app.js'));
   if (path === '/vendor/marked.min.js') return serveFile(req, res, join(HUB_DIR, 'vendor', 'marked.min.js'));
   if (path === '/projects.json') {
     const { solution, projects } = loadProjects(HUB_DIR);

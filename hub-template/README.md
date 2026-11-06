@@ -80,7 +80,9 @@ On the Dashboard, drag a card to another column. Or open a task and use the stat
 ## Files
 
 ```
-index.html             the board
+index.html             the board page
+styles.css             colors and layout of the board
+app.js                 the code of the board
 projects.json          your projects
 serve.mjs              local server
 sync-manifests.mjs     manifest generator and validator
@@ -89,5 +91,7 @@ demo/, shared/         sample projects (delete them)
 ```
 
 The board loads its fonts from Google Fonts. Offline, it falls back to system fonts.
+
+Colors: Ayu Mirage (dark) and Ayu Light. The system setting picks the theme. To force one, set `data-theme="dark"` or `data-theme="light"` on the `<html>` element in `index.html`. All colors are variables at the top of `styles.css`.
 
 Third-party code and resources (`marked`, the fonts) are listed in `THIRD-PARTY.md` in the repository root.

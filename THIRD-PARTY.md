@@ -32,6 +32,14 @@ SOFTWARE.
 
 Check the license text and the copyright lines of the `marked` project when you update the bundled version.
 
+## Ayu colors (values used in `hub-template/styles.css`)
+
+The colors of the board are the Ayu Mirage (dark) and Ayu Light palettes. The values come from `themes/mirage.yaml` and `themes/light.yaml` of the `ayu-colors` project. A few colors are blends of these values, chosen for readable text.
+
+- Project: https://github.com/ayu-theme/ayu-colors
+- License: MIT (same text as above)
+- Copyright (c) Konstantin Pschera
+
 ## Fonts (loaded from Google Fonts, not bundled)
 
 The board asks Google Fonts for the fonts Public Sans and JetBrains Mono. Both are licensed under the SIL Open Font License 1.1. When the board is opened, the browser contacts `fonts.googleapis.com` and `fonts.gstatic.com`. Offline, or when the request is blocked, the board uses system fonts.
