@@ -4,6 +4,7 @@
   Surfaces, text, accent and status colors are Ayu colors. Muted, faint, border and the text colors of the
   light theme are blends of Ayu colors, chosen so that the text keeps a readable contrast (at least 4.5:1, faint text 3.6:1).
   The system setting picks the theme. data-theme="light" or "dark" on <html> overrides it.
+  The theme button in the sidebar sets this attribute (see app.js and the inline script in index.html).
 */
 :root {
   color-scheme: light;
@@ -131,7 +132,39 @@
     font-weight: 700;
     font-size: 19px;
     letter-spacing: -0.01em;
-    margin: 4px 0 6px;
+    margin: 0;
+  }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 2px 0 4px;
+  }
+  .theme-toggle {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-toggle .icon { display: none; width: 18px; height: 18px; }
+  .theme-toggle[data-mode="light"] .icon-sun,
+  .theme-toggle[data-mode="dark"] .icon-moon { display: block; }
+  @keyframes theme-icon-in {
+    from { opacity: 0; transform: rotate(-60deg) scale(0.6); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-toggle .icon { animation: theme-icon-in 0.25s ease-out; }
   }
   .brand-meta {
     font-size: 12px;

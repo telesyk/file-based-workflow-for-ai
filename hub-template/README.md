@@ -92,6 +92,8 @@ demo/, shared/         sample projects (delete them)
 
 The board loads its fonts from Google Fonts. Offline, it falls back to system fonts.
 
-Colors: Ayu Mirage (dark) and Ayu Light. The system setting picks the theme. To force one, set `data-theme="dark"` or `data-theme="light"` on the `<html>` element in `index.html`. All colors are variables at the top of `styles.css`.
+Colors: Ayu Mirage (dark) and Ayu Light. All colors are variables at the top of `styles.css`.
+
+Theme button: at the top of the sidebar, next to the title, a button switches between the light and the dark theme. The icon shows the current theme (sun or moon). The first time (nothing saved), the board shows the theme of the system, or of the browser if the browser has its own theme setting. Every click goes to the opposite theme and saves it in the browser (`localStorage`, key `hub.theme`). The saved choice is applied before the page is drawn, so there is no flash of the other theme. It is saved per browser and per address: `http://localhost:8787`, `http://127.0.0.1:8787` and another port each have their own choice. Clearing the site data, or a private window, goes back to the system theme.
 
 Third-party code and resources (`marked`, the fonts) are listed in `THIRD-PARTY.md` in the repository root.

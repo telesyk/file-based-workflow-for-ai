@@ -108,7 +108,8 @@ Fixed words (`task`, `note`, `stage`) come after the project id, so an item name
 - **Status pills.** All five values (`backlog`, `in-progress`, `testing`, `done`, `unstaged`) have a label (`STATUS_LABEL`) and a style (`.pill-<status>`). No status may render blank.
 - **Notes.** The Markdown body is rendered. A note with `archive` shows an "Archive <date>" badge. Relative links and images work (section 9).
 - **Reload.** The board reloads the manifests when its tab gets the focus, and on the "Refresh" button. The page is drawn again only if something changed, and then at the same scroll position.
-- **Look.** Light and dark mode with the Ayu Light and Ayu Mirage colors (the system setting picks the theme), responsive, clean and unfussy. The page treats `file` as opaque data and never infers anything from folder names.
+- **Theme.** A button at the top of the sidebar, in the same row as the title, switches between two states: Light and Dark. The icon shows the current theme. While nothing is saved (a first visit), the board shows the theme of the system or browser setting and follows it live. Every click goes to the opposite theme and saves it in `localStorage` (key `hub.theme`, per browser and per address). A saved choice always wins over the system setting. A tiny inline script in `<head>` applies it before the first paint. A blocked storage or a bad saved value means "not chosen yet". The server is not involved.
+- **Look.** Light and dark mode with the Ayu Light and Ayu Mirage colors, responsive, clean and unfussy. The page treats `file` as opaque data and never infers anything from folder names.
 
 ## 7. Flows
 

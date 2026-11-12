@@ -609,6 +609,52 @@
   $("navScroll").addEventListener("click", function (e) { if (e.target.closest && e.target.closest("a")) closeMobileNav(); });
   $("searchBox").addEventListener("input", function (e) { buildSidebar(e.target.value); });
 
+  /* ---------------- theme ---------------- */
+  // Two states: "light" and "dark". Until the user has chosen one (nothing saved, for example on the first visit),
+  // the board shows the theme of the system or browser setting. The first click saves an explicit choice.
+  // The inline script in index.html has already applied a saved choice before the first paint.
+
+  var THEME_KEY = "hub.theme";
+  var THEME_NAME = { light: "Light", dark: "Dark" };
+  var themeChoice = null;       // "light", "dark", or null while the user has not chosen
+
+  function readThemeChoice() {
+    try { var t = localStorage.getItem(THEME_KEY); return t === "light" || t === "dark" ? t : null; }
+    catch (e) { return null; }
+  }
+  function saveThemeChoice(choice) {
+    try { localStorage.setItem(THEME_KEY, choice); }
+    catch (e) { /* blocked: the choice lasts until the page is reloaded */ }
+  }
+  function systemTheme() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function currentTheme() { return themeChoice || systemTheme(); }
+  function showTheme() {
+    var root = document.documentElement;
+    // No attribute while nothing is chosen: the CSS then follows the system setting by itself.
+    if (themeChoice) root.setAttribute("data-theme", themeChoice); else root.removeAttribute("data-theme");
+    var now = currentTheme();
+    var other = now === "dark" ? "light" : "dark";
+    var label = "Theme: " + THEME_NAME[now] + ". Click for " + THEME_NAME[other] + ".";
+    var btn = $("themeToggle");
+    btn.setAttribute("data-mode", now);
+    btn.setAttribute("aria-label", label);
+    btn.title = label;
+  }
+  $("themeToggle").addEventListener("click", function () {
+    themeChoice = currentTheme() === "dark" ? "light" : "dark";
+    saveThemeChoice(themeChoice);
+    showTheme();
+  });
+  if (window.matchMedia) {
+    var systemQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    var onSystemChange = function () { if (!themeChoice) showTheme(); };
+    if (systemQuery.addEventListener) systemQuery.addEventListener("change", onSystemChange);
+    else if (systemQuery.addListener) systemQuery.addListener(onSystemChange);
+  }
+  themeChoice = readThemeChoice();
+  showTheme();
   // Reload the manifests. The page is drawn again only when something changed, and then at the same scroll position.
   // So switching to another tab or window and back never moves the page.
   var refreshing = false;
