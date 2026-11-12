@@ -615,11 +615,14 @@
   // The inline script in index.html has already applied a saved choice before the first paint.
 
   var THEME_KEY = "hub.theme";
-  var THEME_NAME = { light: "Light", dark: "Dark" };
+  var THEME = { light: "light", dark: "dark" };
   var themeChoice = null;       // "light", "dark", or null while the user has not chosen
 
+  function capitalThemeName(themeName) { // return string
+    return themeName.charAt(0).toUpperCase().concat(themeName.substring(1));
+  }
   function readThemeChoice() {
-    try { var t = localStorage.getItem(THEME_KEY); return t === "light" || t === "dark" ? t : null; }
+    try { var t = localStorage.getItem(THEME_KEY); return t === THEME.light || t === THEME.dark ? t : null; }
     catch (e) { return null; }
   }
   function saveThemeChoice(choice) {
@@ -627,23 +630,23 @@
     catch (e) { /* blocked: the choice lasts until the page is reloaded */ }
   }
   function systemTheme() {
-    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? THEME.dark : THEME.light;
   }
   function currentTheme() { return themeChoice || systemTheme(); }
   function showTheme() {
     var root = document.documentElement;
     // No attribute while nothing is chosen: the CSS then follows the system setting by itself.
     if (themeChoice) root.setAttribute("data-theme", themeChoice); else root.removeAttribute("data-theme");
-    var now = currentTheme();
-    var other = now === "dark" ? "light" : "dark";
-    var label = "Theme: " + THEME_NAME[now] + ". Click for " + THEME_NAME[other] + ".";
+    var themeNow = currentTheme();
+    var themeChange = themeNow === THEME.dark ? THEME.light : THEME.dark;
+    var label = "Theme: " + capitalThemeName(themeNow) + ". Click for " + capitalThemeName(themeChange) + ".";
     var btn = $("themeToggle");
-    btn.setAttribute("data-mode", now);
+    btn.setAttribute("data-mode", themeNow);
     btn.setAttribute("aria-label", label);
     btn.title = label;
   }
   $("themeToggle").addEventListener("click", function () {
-    themeChoice = currentTheme() === "dark" ? "light" : "dark";
+    themeChoice = currentTheme() === THEME.dark ? THEME.light : THEME.dark;
     saveThemeChoice(themeChoice);
     showTheme();
   });
